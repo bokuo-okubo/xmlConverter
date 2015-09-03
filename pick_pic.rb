@@ -54,7 +54,7 @@ EOS
       ary = uri.to_s.split("/")
       save_file_name = ary[-2].to_s + "-" + ary[-1].to_s
       begin
-        `curl --anyauth --user 4d:4d #{ uri } -o #{ save_path + save_file_name } >/dev/null 2>&1`
+        `curl --anyauth --user hoge:hoge #{ uri } -o #{ save_path + save_file_name } >/dev/null 2>&1`
       rescue => e
         puts e
         File.open("../error.log", "a") { |f| f.write e + "\n"}
