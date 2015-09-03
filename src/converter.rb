@@ -5,7 +5,7 @@ require 'thwait'
 require 'yaml'
 require 'pp'
 
-Conf = Struct.new(:user, :pass) 
+Conf = Struct.new(:user, :pass)
 
 def read_yaml(str)
   YAML.load(str)
@@ -45,16 +45,16 @@ def run(input_file_path)
 end
 
 
-def logging(msg)
-  puts msg
-  begin
-    File.open("./error.log", "a") { |f| f.write msg.to_s + "\n" }
-    true
-  rescue => e
-    puts e
-    false
-  end
-end
+# def logging(msg)
+#   puts msg
+#   begin
+#     File.open("./error.log", "a") { |f| f.write msg.to_s + "\n" }
+#     true
+#   rescue => e
+#     puts e
+#     false
+#   end
+# end
 
 def curl(uri, save_path, user: nil, pass: nil)
   ary = uri.to_s.split("/")
@@ -71,21 +71,21 @@ def curl(uri, save_path, user: nil, pass: nil)
 end
 
 ## return String xml
-def read_file(file_path)
-  begin
-    File.open(file_path) { |f| f.read }
-  rescue => e
-    logging e
-  end
-end
+# def read_file(file_path)
+#   begin
+#     File.open(file_path) { |f| f.read }
+#   rescue => e
+#     logging e
+#   end
+# end
 
-def write_file(str, file_path, mode: 'w')
-  begin
-    File.open(file_path, mode) { |f| f.write str}
-  rescue => e
-    logging e
-  end
-end
+# def write_file(str, file_path, mode: 'w')
+#   begin
+#     File.open(file_path, mode) { |f| f.write str}
+#   rescue => e
+#     logging e
+#   end
+# end
 
 
 Resource = Struct.new(:filename, :encodes,)
