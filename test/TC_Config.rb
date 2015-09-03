@@ -1,6 +1,5 @@
 require './BaseTestCase.rb'
 require '../src/Config.rb'
-require '../'
 
 class TC_Config < BaseTestCase
   def setup
