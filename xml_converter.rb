@@ -23,6 +23,8 @@ class XMLConverter
     load_files.map { |xml_str| converter.xml_to_page_obj(xml_str) }
   end
 end
-csv_base = XMLConverter.new.run.map{ |hash| hash.map { |k,v| [k, v] } }
+container = XMLConverter.new.run
+
+pp csv_base = container.map {|hash| [ 'tamplate_type', hash[:template], *hash[:attributes].flatten ] }
 time = Time.now.strftime "%Y%m%d%H%M%S"
-CSV.open(time + ".csv", "wb") { |csv| csv_base.each {|row| csv << row.flatten } }
+File.open(time + ".csv", "wb" ) { |csv| csv_base.each {|row| csv << row.join("\t") + "\n" } }

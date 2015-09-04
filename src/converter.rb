@@ -21,7 +21,9 @@ class Converter
 
   def xml_to_page_obj(xml_str)
     xml_obj = REXML::Document.new(xml_str).root
+    template_type = xml_obj.elements['template'].text
     layout_info_attributes = xml_obj.elements['layout_info'].attributes
+    {template: template_type, attributes: layout_info_attributes}
   end
 
   def xml_to_resource_obj(xml_obj)
