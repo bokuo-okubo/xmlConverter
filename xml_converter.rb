@@ -1,5 +1,4 @@
-require './src/FileHandler.rb'
-require './src/converter.rb'
+Dir['./src/*.rb'].each{ |f| require f }
 require 'pp'
 require 'json'
 require 'csv'
