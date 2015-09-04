@@ -7,6 +7,10 @@ require 'pp'
 
 Conf = Struct.new(:user, :pass)
 
+class C
+
+
+####################################################################################################
 def read_yaml(str)
   YAML.load(str)
 end
