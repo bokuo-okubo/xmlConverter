@@ -1,6 +1,5 @@
 require 'rexml/document'
 require 'base64'
-require './FileHandler.rb'
 require 'fileutils'
 require 'thwait'
 require 'yaml'
@@ -44,10 +43,6 @@ class Converter
   end
 end ## class
 
-
-class TaskRunner
-  inport
-end  
 
 ####################################################################################################
 def read_yaml(str)
