@@ -1,5 +1,6 @@
 require 'rexml/document'
 require 'base64'
+require './FileHandler.rb'
 require 'fileutils'
 require 'thwait'
 require 'yaml'
@@ -7,8 +8,46 @@ require 'pp'
 
 Conf = Struct.new(:user, :pass)
 
-class C
+class Converter
+  ResourceObject = Struct.new(:filename, :encodes)
+  PageObject = Struct.new(:layout_info_attributes, :resources)
 
+  def convert_to_obj(rexml_doc, attribute, match_path)
+    resources = REXML::XPath.match(rexml_doc, match_path).map do |node|
+      filename = node.attribute(attribute).value
+      elements = node.elements.map{ |data| data.text.gsub(/\<\!\[CDATA\[/, "").gsub(/\]\]\>/, "") }
+      Resource.new(filename, elements)
+    end
+  end
+
+  def xml_to_page_obj(xml_str)
+    xml_obj = REXML::Document.new(xml_str).root
+    layout_info_attributes = xml_obj.elements['layout_info'].attributes
+  end
+
+  def xml_to_resource_obj(xml_obj)
+    filename = xml_obj.attribute('source').value
+    encodes = xml_obj.elements.map { |data| data.text.gsub(/\<\!\[CDATA\[/, "").gsub(/\]\]\>/, "") }
+    build_resource_object(filename, encodes)
+  end
+
+  def build_resource_object(*parms)
+    ResourceObject.new(*parms)
+  end
+
+  def build_page_object(resources)
+    PageObject.new(resources)
+  end
+
+  def decode_base64(encoded)
+    Base64.decode64 encoded
+  end
+end ## class
+
+
+class TaskRunner
+  inport
+end  
 
 ####################################################################################################
 def read_yaml(str)
@@ -107,11 +146,11 @@ end
 
 
 
-file_list = <<LIST
-LIST
+# file_list = <<LIST
+# LIST
 
-threads = []
-file_list.split("\n").each { |file_name| threads << Thread.new { run(file_name) }}
-puts 'work in multi-thread'
-ThreadsWait.all_waits(*threads) { |th| printf "." }
-puts "\ndone!"
+# threads = []
+# file_list.split("\n").each { |file_name| threads << Thread.new { run(file_name) }}
+# puts 'work in multi-thread'
+# ThreadsWait.all_waits(*threads) { |th| printf "." }
+# puts "\ndone!"
