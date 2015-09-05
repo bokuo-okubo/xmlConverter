@@ -33,7 +33,7 @@ class XMLConverter
     end
   end
 
-  def sirial_run
+  def serial_run
     load_files_path
     converter = Converter.new
     base_ratio = load_files.length 
@@ -64,4 +64,4 @@ class XMLConverter
   end
 end
 
-container = XMLConverter.new.sirial_run
+container = XMLConverter.new.serial_run
