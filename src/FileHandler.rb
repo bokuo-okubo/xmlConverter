@@ -1,6 +1,6 @@
 require 'yaml'
 
-module FileHandler
+module FileHandler ## TODO : to change to Class methods in this class has
   def read_yaml(str)
     YAML.load(str)
   end
