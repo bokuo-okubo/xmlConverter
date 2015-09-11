@@ -1,11 +1,17 @@
-require './src/FileHandler.rb'
-require './src/converter.rb'
 require 'pp'
 require 'json'
 require 'csv'
 
+require './src/FileHandler.rb'
+require './src/Converter.rb'
+require './src/Thread.rb'
+require './src/ListSetter.rb'
+
+
 class XMLConverter
   include FileHandler
+  include ListSetter
+
   @@load_file_path
   @@load_file_list
 
@@ -20,9 +26,49 @@ class XMLConverter
   def run
     load_files_path
     converter = Converter.new
-    load_files.map { |xml_str| converter.xml_to_page_obj(xml_str) }
+    threads = []
+    load_files.map do |xml_str|
+      Thread.max_concurrent= 10
+      threads << Thread.new do
+        printf '.'
+        converter.xml_to_page_obj(xml_str)
+      end
+    end
+  end
+
+  def set_curl_list
+    @@curl_list ||=  to_curl_list
+  end
+
+  def serial_run
+    load_files_path
+    converter = Converter.new
+    base_ratio = load_files.length 
+    register = 0
+    counter = 0
+    time = Time.now.strftime "%Y%m%d"
+    file = File.open(time + ".csv", "a" )
+    begin
+      load_files.each do |xml_str|
+        file.write("#{counter}\t")
+        if counter%1000 == 0
+          register = counter
+          puts "#{ (register.to_f/base_ratio.to_f) * 100 } %"
+        end
+        hash = converter.xml_to_page_obj(xml_str)
+
+        id = hash[:id] ? hash[:id] : 'cannot pick id'
+        error = hash[:error] ? hash[:error] : 0
+        template = hash[:template]
+        attributes = hash[:attributes]
+        attributes = attributes.map { |hash| hash.to_a.join(".") }.join(",") if attributes
+        file.write( [id, error, template, attributes ].join("\t") + "\n" )
+        counter += 1
+      end            
+    ensure
+      file.close
+    end
   end
 end
-csv_base = XMLConverter.new.run.map{ |hash| hash.map { |k,v| [k, v] } }
-time = Time.now.strftime "%Y%m%d%H%M%S"
-CSV.open(time + ".csv", "wb") { |csv| csv_base.each {|row| csv << row.flatten } }
+
+container = XMLConverter.new.serial_run
