@@ -5,10 +5,13 @@ require 'csv'
 require './src/FileHandler.rb'
 require './src/Converter.rb'
 require './src/Thread.rb'
+require './src/ListSetter.rb'
 
 
 class XMLConverter
   include FileHandler
+  include ListSetter
+
   @@load_file_path
   @@load_file_list
 
@@ -31,6 +34,10 @@ class XMLConverter
         converter.xml_to_page_obj(xml_str)
       end
     end
+  end
+
+  def set_curl_list
+    @@curl_list ||=  to_curl_list
   end
 
   def serial_run

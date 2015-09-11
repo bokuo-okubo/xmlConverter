@@ -12,6 +12,6 @@ class << Thread
   end
 
   def Thread.max_concurrent=(num = 10)
-    Thread.main[:max_concurrent]=num
+    Thread.main[:max_concurrent] = num
   end
 end
